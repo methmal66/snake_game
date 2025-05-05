@@ -22,8 +22,15 @@
 #define SCORE_AREA_HEIGHT 16
 #define PARTITION_LINE_Y (SCORE_AREA_HEIGHT - 1)
 
+// Snake moving directions
+#define DIRECTION_UP 3
+#define DIRECTION_DOWN 1
+#define DIRECTION_LEFT 2
+#define DIRECTION_RIGHT 0
+
 #define INITIAL_SCORE 0
 #define INITIAL_SNAKE_LENGTH 3
+#define INITIAL_DIRECTION DIRECTION_RIGHT
 
 // Button Debouncing
 #define DEBOUNCE_TIME 50

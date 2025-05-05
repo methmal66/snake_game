@@ -5,17 +5,18 @@
 
 #include "config.h"
 #include "display.h"
+#include "game.h"
 #include "graphic.h"
 #include "serial.h"
 #include "types.h"
 
-volatile uint8_t direction = 0;  // 0=right, 1=down, 2=left, 3=up
-volatile uint8_t gameOver = 0;
 volatile uint32_t lastMoveTime = 0;
 
 // Button Debouncing
 volatile uint32_t lastButtonTime = 0;
 volatile uint8_t buttonsEnabled = 1;
+
+volatile uint8_t direction = INITIAL_DIRECTION;
 
 // ======================
 // Button Functions
@@ -42,82 +43,15 @@ ISR(PCINT2_vect) {
 
   uint8_t buttons = PIND;
 
-  if (!(buttons & (1 << UP_BTN_PIN)) && direction != 1) {
-    direction = 3;
-  } else if (!(buttons & (1 << DOWN_BTN_PIN)) && direction != 3) {
-    direction = 1;
-  } else if (!(buttons & (1 << LEFT_BTN_PIN)) && direction != 0) {
-    direction = 2;
-  } else if (!(buttons & (1 << RIGHT_BTN_PIN)) && direction != 2) {
-    direction = 0;
+  if (!(buttons & (1 << UP_BTN_PIN)) && direction != DIRECTION_DOWN) {
+    direction = DIRECTION_UP;
+  } else if (!(buttons & (1 << DOWN_BTN_PIN)) && direction != DIRECTION_UP) {
+    direction = DIRECTION_DOWN;
+  } else if (!(buttons & (1 << LEFT_BTN_PIN)) && direction != DIRECTION_RIGHT) {
+    direction = DIRECTION_LEFT;
+  } else if (!(buttons & (1 << RIGHT_BTN_PIN)) && direction != DIRECTION_LEFT) {
+    direction = DIRECTION_RIGHT;
   }
-}
-
-// ======================
-// Game Functions
-// ======================
-void place_food(uint8_t* snakeLength, Point* snake, Point* food) {
-  uint8_t valid = 0;
-  while (!valid) {
-    food->x = rand() % GRID_SIZE;
-    food->y = rand() % GRID_SIZE;
-    valid = 1;
-    for (uint8_t i = 0; i < *snakeLength; i++) {
-      if (snake[i].x == food->x && snake[i].y == food->y) {
-        valid = 0;
-        break;
-      }
-    }
-  }
-}
-
-void move_snake(uint16_t* score,
-                uint8_t* snakeLength,
-                Point* snake,
-                Point* food) {
-  Point newHead = snake[0];
-
-  switch (direction) {
-    case 0:
-      newHead.x++;
-      break;  // Right
-    case 1:
-      newHead.y++;
-      break;  // Down
-    case 2:
-      newHead.x--;
-      break;  // Left
-    case 3:
-      newHead.y--;
-      break;  // Up
-  }
-
-  // Wrap around boundaries
-  newHead.x %= GRID_SIZE;
-  newHead.y %= GRID_SIZE;
-
-  // Collision check with self
-  for (uint8_t i = 1; i < *snakeLength; i++) {
-    if (snake[i].x == newHead.x && snake[i].y == newHead.y) {
-      gameOver = 1;
-      return;
-    }
-  }
-
-  // Food check
-  if (newHead.x == food->x && newHead.y == food->y) {
-    if (*snakeLength < MAX_SNAKE_LENGTH) {
-      snakeLength++;
-    }
-    *score++;
-    place_food(snakeLength, snake, food);
-  } else {
-    // Move body
-    for (uint8_t i = *snakeLength - 1; i > 0; i--) {
-      snake[i] = snake[i - 1];
-    }
-  }
-  snake[0] = newHead;
 }
 
 // ======================
@@ -133,6 +67,8 @@ int main(void) {
   Point snake[MAX_SNAKE_LENGTH];
   Point* food;
 
+  uint8_t gameOver = 0;
+
   // Initialize hardware
   spi_init();
   init_buttons();
@@ -143,7 +79,6 @@ int main(void) {
   snake[0] = (Point){3, 4};
   snake[1] = (Point){2, 4};
   snake[2] = (Point){1, 4};
-  direction = 0;  // Start moving right
   place_food(snakeLength, snake, food);
 
   // Draw initial display
@@ -157,7 +92,7 @@ int main(void) {
       // Using interrupt-based button handling
 
       if (lastMoveTime++ > MOVE_DELAY) {
-        move_snake(score, snakeLength, snake, food);
+        move_snake(score, snakeLength, snake, food, direction, &gameOver);
         lastMoveTime = 0;
         render_game(score, snakeLength, snake, food);
       }
@@ -171,7 +106,7 @@ int main(void) {
         snake[0] = (Point){3, 4};
         snake[1] = (Point){2, 4};
         snake[2] = (Point){1, 4};
-        direction = 0;
+        direction = INITIAL_DIRECTION;
         score = 0;
         gameOver = 0;
         place_food(snakeLength, snake, food);

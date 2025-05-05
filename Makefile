@@ -18,8 +18,10 @@ build: main.c config.h serial.h serial.c display.h display.c graphic.h graphic.c
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/serial.o serial.c
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/display.o display.c
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/graphic.o graphic.c
+	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/game.o game.c
 
-	avr-gcc -mmcu=$(MCU) -o $(BIN_DIR)/main.bin $(BIN_DIR)/main.o $(BIN_DIR)/serial.o $(BIN_DIR)/display.o $(BIN_DIR)/graphic.o
+
+	avr-gcc -mmcu=$(MCU) -o $(BIN_DIR)/main.bin $(BIN_DIR)/main.o $(BIN_DIR)/serial.o $(BIN_DIR)/display.o $(BIN_DIR)/graphic.o $(BIN_DIR)/game.o
 	avr-objcopy -O ihex -R .eeprom $(BIN_DIR)/main.bin $(BIN_DIR)/main.hex
 
 upload: $(BIN_DIR)/main.hex
