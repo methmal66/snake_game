@@ -4,6 +4,7 @@
 #include <util/delay.h>
 
 #include "config.h"
+#include "serial.h"
 
 Point snake[MAX_SNAKE_LENGTH];
 uint8_t snakeLength = 3;
@@ -16,22 +17,6 @@ volatile uint32_t lastMoveTime = 0;
 // Button Debouncing
 volatile uint32_t lastButtonTime = 0;
 volatile uint8_t buttonsEnabled = 1;
-
-// ======================
-// SPI Functions
-// ======================
-void spi_init() {
-  DDRB |=
-      (1 << PB3) | (1 << PB5) | (1 << CS_PIN) | (1 << DC_PIN) | (1 << RES_PIN);
-  SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0);
-  PORTB |= (1 << CS_PIN);
-}
-
-void spi_write(uint8_t data) {
-  SPDR = data;
-  while (!(SPSR & (1 << SPIF)))
-    ;
-}
 
 // ======================
 // SH1107 Functions
