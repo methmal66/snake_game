@@ -12,13 +12,14 @@ default:
 	make upload 
 	make clean
 
-build: main.c config.h serial.h serial.c display.h display.c
+build: main.c config.h serial.h serial.c display.h display.c graphic.h graphic.c
 	mkdir -p $(BIN_DIR)
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/main.o main.c
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/serial.o serial.c
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/display.o display.c
+	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/graphic.o graphic.c
 
-	avr-gcc -mmcu=$(MCU) -o $(BIN_DIR)/main.bin $(BIN_DIR)/main.o $(BIN_DIR)/serial.o $(BIN_DIR)/display.o
+	avr-gcc -mmcu=$(MCU) -o $(BIN_DIR)/main.bin $(BIN_DIR)/main.o $(BIN_DIR)/serial.o $(BIN_DIR)/display.o $(BIN_DIR)/graphic.o
 	avr-objcopy -O ihex -R .eeprom $(BIN_DIR)/main.bin $(BIN_DIR)/main.hex
 
 upload: $(BIN_DIR)/main.hex

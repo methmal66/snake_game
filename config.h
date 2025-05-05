@@ -22,6 +22,9 @@
 #define SCORE_AREA_HEIGHT 16
 #define PARTITION_LINE_Y (SCORE_AREA_HEIGHT - 1)
 
+#define INITIAL_SCORE 0
+#define INITIAL_SNAKE_LENGTH 3
+
 // Button Debouncing
 #define DEBOUNCE_TIME 50
 
