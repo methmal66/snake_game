@@ -5,6 +5,6 @@
 
 void spi_init();
 
-void spi_write(uint8_t d);
+void spi_write(uint8_t);
 
 #endif
