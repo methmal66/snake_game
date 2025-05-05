@@ -7,6 +7,7 @@
 #include "display.h"
 #include "graphic.h"
 #include "serial.h"
+#include "types.h"
 
 volatile uint8_t direction = 0;  // 0=right, 1=down, 2=left, 3=up
 volatile uint8_t gameOver = 0;

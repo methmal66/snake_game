@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "display.h"
+#include "types.h"
 
 // ======================
 // Drawing Functions

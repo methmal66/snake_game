@@ -28,10 +28,4 @@
 // Button Debouncing
 #define DEBOUNCE_TIME 50
 
-// Game State
-typedef struct {
-  uint8_t x;
-  uint8_t y;
-} Point;
-
 #endif

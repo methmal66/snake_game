@@ -2,7 +2,7 @@
 #define SNAKE_GAME_GRAPHIC_H
 
 #include <stdint.h>
-#include "config.h"
+#include "types.h"
 
 void draw_horizontal_line(uint8_t);
 
