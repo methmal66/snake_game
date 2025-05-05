@@ -3,30 +3,7 @@
 #include <stdlib.h>
 #include <util/delay.h>
 
-// SH1107 SPI Configuration
-#define CS_PIN PB2   // D10
-#define DC_PIN PB1   // D9
-#define RES_PIN PB0  // D8
-
-// Button Pins
-#define UP_BTN_PIN 2     // D2
-#define DOWN_BTN_PIN 3   // D3
-#define LEFT_BTN_PIN 4   // D4
-#define RIGHT_BTN_PIN 5  // D5
-
-// Game Configuration
-#define GRID_SIZE 16
-#define CELL_SIZE 8
-#define MAX_SNAKE_LENGTH 50
-#define MOVE_DELAY 250
-#define SCORE_AREA_HEIGHT 16
-#define PARTITION_LINE_Y (SCORE_AREA_HEIGHT - 1)
-
-// Game State
-typedef struct {
-  uint8_t x;
-  uint8_t y;
-} Point;
+#include "config.h"
 
 Point snake[MAX_SNAKE_LENGTH];
 uint8_t snakeLength = 3;
@@ -37,7 +14,6 @@ volatile uint8_t gameOver = 0;
 volatile uint32_t lastMoveTime = 0;
 
 // Button Debouncing
-#define DEBOUNCE_TIME 50
 volatile uint32_t lastButtonTime = 0;
 volatile uint8_t buttonsEnabled = 1;
 

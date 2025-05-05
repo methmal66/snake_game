@@ -12,7 +12,7 @@ default:
 	make upload 
 	make clean
 
-build: main.c
+build: main.c config.h
 	mkdir -p $(BIN_DIR)
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MCU) -c -o $(BIN_DIR)/main.o main.c
 	avr-gcc -mmcu=$(MCU) -o $(BIN_DIR)/main.bin $(BIN_DIR)/main.o
