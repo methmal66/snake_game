@@ -58,11 +58,9 @@ ISR(PCINT2_vect) {
 // Main Program
 // ======================
 int main(void) {
-  uint16_t* score = malloc(sizeof(uint16_t));
-  *score = INITIAL_SCORE;
+  uint16_t score = INITIAL_SCORE;
 
-  uint8_t* snakeLength = malloc(sizeof(uint8_t));
-  *snakeLength = INITIAL_SNAKE_LENGTH;
+  uint8_t snakeLength = INITIAL_SNAKE_LENGTH;
 
   Point snake[MAX_SNAKE_LENGTH];
   Point* food;
@@ -79,12 +77,12 @@ int main(void) {
   snake[0] = (Point){3, 4};
   snake[1] = (Point){2, 4};
   snake[2] = (Point){1, 4};
-  place_food(snakeLength, snake, food);
+  place_food(&snakeLength, snake, food);
 
   // Draw initial display
-  draw_score(score);
+  draw_score(&score);
   draw_horizontal_line(PARTITION_LINE_Y);
-  render_game(score, snakeLength, snake, food);
+  render_game(&score, &snakeLength, snake, food);
 
   // Main game loop
   while (1) {
@@ -92,9 +90,9 @@ int main(void) {
       // Using interrupt-based button handling
 
       if (lastMoveTime++ > MOVE_DELAY) {
-        move_snake(score, snakeLength, snake, food, direction, &gameOver);
+        move_snake(&score, &snakeLength, snake, food, direction, &gameOver);
         lastMoveTime = 0;
-        render_game(score, snakeLength, snake, food);
+        render_game(&score, &snakeLength, snake, food);
       }
       _delay_ms(1);
     } else {
@@ -102,15 +100,15 @@ int main(void) {
       if (!(PIND & ((1 << UP_BTN_PIN) | (1 << DOWN_BTN_PIN) |
                     (1 << LEFT_BTN_PIN) | (1 << RIGHT_BTN_PIN)))) {
         // Reset game
-        *snakeLength = 3;
+        snakeLength = 3;
         snake[0] = (Point){3, 4};
         snake[1] = (Point){2, 4};
         snake[2] = (Point){1, 4};
         direction = INITIAL_DIRECTION;
         score = 0;
         gameOver = 0;
-        place_food(snakeLength, snake, food);
-        render_game(score, snakeLength, snake, food);
+        place_food(&snakeLength, snake, food);
+        render_game(&score, &snakeLength, snake, food);
       }
     }
   }
