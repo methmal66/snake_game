@@ -3,15 +3,10 @@
 
 #include "types.h"
 
-void place_food(uint8_t*, Point*, Point*);
+void place_food(GameState*);
 
-void move_snake(uint16_t*, uint8_t*, Point*, Point*, uint8_t, uint8_t*);
+void move_snake(GameState*);
 
-void reset_game(uint8_t*,
-                Point*,
-                volatile uint8_t*,
-                uint16_t*,
-                uint8_t*,
-                Point*);
+void reset_game(GameState*);
 
 #endif

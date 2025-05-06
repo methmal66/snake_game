@@ -180,10 +180,7 @@ void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
   }
 }
 
-void render_game(uint16_t* score,
-                 uint8_t* snakeLength,
-                 Point* snake,
-                 Point* food) {
+void render_game(GameState* state) {
   // Clear play area only (below partition line)
   for (uint8_t page = PARTITION_LINE_Y / 8 + 1; page < 16; page++) {
     sh1107_command(0xB0 + page);
@@ -198,9 +195,9 @@ void render_game(uint16_t* score,
   draw_horizontal_line(PARTITION_LINE_Y);
 
   // Draw snake
-  for (uint8_t i = 0; i < *snakeLength; i++) {
-    uint8_t x = snake[i].x * CELL_SIZE + 1;
-    uint8_t y = snake[i].y * CELL_SIZE + 1 + SCORE_AREA_HEIGHT;
+  for (uint8_t i = 0; i < state->snakeLength; i++) {
+    uint8_t x = state->snake[i].x * CELL_SIZE + 1;
+    uint8_t y = state->snake[i].y * CELL_SIZE + 1 + SCORE_AREA_HEIGHT;
     for (uint8_t dy = 0; dy < CELL_SIZE - 2; dy++) {
       for (uint8_t dx = 0; dx < CELL_SIZE - 2; dx++) {
         sh1107_command(0xB0 + ((y + dy) / 8));
@@ -212,10 +209,10 @@ void render_game(uint16_t* score,
   }
 
   // Draw food
-  uint8_t foodX = food->x * CELL_SIZE + CELL_SIZE / 2;
-  uint8_t foodY = food->y * CELL_SIZE + CELL_SIZE / 2 + SCORE_AREA_HEIGHT;
+  uint8_t foodX = state->food.x * CELL_SIZE + CELL_SIZE / 2;
+  uint8_t foodY = state->food.y * CELL_SIZE + CELL_SIZE / 2 + SCORE_AREA_HEIGHT;
   draw_circle(foodX, foodY, CELL_SIZE / 2 - 1);
 
   // Update score display
-  draw_score(score);
+  draw_score(&(state->score));
 }

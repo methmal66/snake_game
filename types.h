@@ -8,4 +8,13 @@ typedef struct {
   uint8_t y;
 } Point;
 
+typedef struct {
+  uint16_t score;
+  uint8_t snakeLength;
+  Point* snake;
+  uint8_t gameOver;
+  Point food;
+  uint8_t direction;
+} GameState;
+
 #endif

@@ -12,6 +12,6 @@ void draw_score(uint16_t*);
 
 void draw_circle(uint8_t, uint8_t, uint8_t);
 
-void render_game(uint16_t*, uint8_t*, Point*, Point*);
+void render_game(GameState*);
 
 #endif

@@ -65,26 +65,24 @@ void hardware_init() {
 // Main Program
 // ======================
 int main(void) {
-  uint16_t score;
-  uint8_t snakeLength;
-  uint8_t gameOver;
-
-  Point snake[MAX_SNAKE_LENGTH];
-  Point food;
+  GameState* state;
+  state->direction = direction;
+  state->score = INITIAL_SCORE;
+  state->snakeLength = INITIAL_SNAKE_LENGTH;
 
   hardware_init();
 
-  reset_game(&snakeLength, snake, &direction, &score, &gameOver, &food);
+  reset_game(state);
 
   // Main game loop
   while (1) {
-    if (!gameOver) {
+    if (!state->gameOver) {
       // Using interrupt-based button handling
 
       if (lastMoveTime++ > MOVE_DELAY) {
-        move_snake(&score, &snakeLength, snake, &food, direction, &gameOver);
+        move_snake(state);
         lastMoveTime = 0;
-        render_game(&score, &snakeLength, snake, &food);
+        render_game(state);
       }
       _delay_ms(1);
     } else {
@@ -92,7 +90,7 @@ int main(void) {
       if (!(PIND & ((1 << UP_BTN_PIN) | (1 << DOWN_BTN_PIN) |
                     (1 << LEFT_BTN_PIN) | (1 << RIGHT_BTN_PIN)))) {
         // Reset game
-        reset_game(&snakeLength, snake, &direction, &score, &gameOver, &food);
+        reset_game(state);
       }
     }
   }
