@@ -31,6 +31,7 @@
 #define INITIAL_SCORE 0
 #define INITIAL_SNAKE_LENGTH 3
 #define INITIAL_DIRECTION DIRECTION_RIGHT
+#define INITIAL_SNAKE {{3, 4}, {2, 4}, {1, 4}}
 
 // Button Debouncing
 #define DEBOUNCE_TIME 50

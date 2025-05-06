@@ -28,16 +28,16 @@ void move_snake(GameState* state) {
   Point newHead = state->snake[0];
 
   switch (*(state->direction)) {
-    case 0:
+    case DIRECTION_RIGHT:
       newHead.x++;
       break;  // Right
-    case 1:
+    case DIRECTION_DOWN:
       newHead.y++;
       break;  // Down
-    case 2:
+    case DIRECTION_LEFT:
       newHead.x--;
       break;  // Left
-    case 3:
+    case DIRECTION_UP:
       newHead.y--;
       break;  // Up
   }
@@ -74,12 +74,7 @@ void reset_game(GameState* state) {
   state->direction = INITIAL_DIRECTION;
   state->score = INITIAL_SCORE;
   state->gameOver = 0;
-
-  Point snake_[MAX_SNAKE_LENGTH];
-  snake_[0] = (Point){3, 4};
-  snake_[1] = (Point){2, 4};
-  snake_[2] = (Point){1, 4};
-  state->snake = snake_;
+  state->snake = (Point[MAX_SNAKE_LENGTH])INITIAL_SNAKE;
 
   place_food(state);
   draw_score(&(state->score));
