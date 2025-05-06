@@ -1,6 +1,8 @@
 #include <stdlib.h>
 
 #include "config.h"
+#include "display.h"
+#include "graphic.h"
 #include "types.h"
 
 // ======================
@@ -70,4 +72,24 @@ void move_snake(uint16_t* score,
     }
   }
   snake[0] = newHead;
+}
+
+void reset_game(uint8_t* snakeLength,
+                Point* snake,
+                volatile uint8_t* direction,
+                uint16_t* score,
+                uint8_t* gameOver,
+                Point* food) {
+  *snakeLength = 3;
+  snake[0] = (Point){3, 4};
+  snake[1] = (Point){2, 4};
+  snake[2] = (Point){1, 4};
+  *direction = INITIAL_DIRECTION;
+  *score = INITIAL_SCORE;
+  *gameOver = 0;
+
+  place_food(snakeLength, snake, food);
+  draw_score(score);
+  draw_horizontal_line(PARTITION_LINE_Y);
+  render_game(score, snakeLength, snake, food);
 }
