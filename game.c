@@ -30,16 +30,16 @@ void move_snake(GameState* state) {
   switch (*(state->direction)) {
     case DIRECTION_RIGHT:
       newHead.x++;
-      break;  // Right
+      break;
     case DIRECTION_DOWN:
       newHead.y++;
-      break;  // Down
+      break;
     case DIRECTION_LEFT:
       newHead.x--;
-      break;  // Left
+      break;
     case DIRECTION_UP:
       newHead.y--;
-      break;  // Up
+      break;
   }
 
   // Wrap around boundaries

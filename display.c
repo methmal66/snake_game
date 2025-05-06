@@ -2,6 +2,7 @@
 #include <util/delay.h>
 
 #include "config.h"
+#include "display.h"
 #include "serial.h"
 
 // ======================
@@ -29,29 +30,29 @@ void sh1107_init() {
   _delay_ms(10);
 
   // Init sequence
-  sh1107_command(0xAE);  // Display OFF
-  sh1107_command(0xD5);
-  sh1107_command(0x80);
-  sh1107_command(0xA8);
-  sh1107_command(0x7F);
-  sh1107_command(0xD3);
-  sh1107_command(0x00);
-  sh1107_command(0x40);
-  sh1107_command(0x8D);
-  sh1107_command(0x14);
-  sh1107_command(0x20);
-  sh1107_command(0x00);
-  sh1107_command(0xA1);
-  sh1107_command(0xC8);
-  sh1107_command(0xDA);
-  sh1107_command(0x12);
-  sh1107_command(0x81);
-  sh1107_command(0xCF);
-  sh1107_command(0xD9);
-  sh1107_command(0xF1);
-  sh1107_command(0xDB);
-  sh1107_command(0x40);
-  sh1107_command(0xA4);
-  sh1107_command(0xA6);
-  sh1107_command(0xAF);  // Display ON
+  sh1107_command(SH1107_DISPLAY_OFF);
+  sh1107_command(SH1107_SET_CLOCK_DIV);
+  sh1107_command(SH1107_CLOCK_DIV_DEFAULT);
+  sh1107_command(SH1107_SET_MULTIPLEX_RATIO);
+  sh1107_command(SH1107_MULTIPLEX_128);
+  sh1107_command(SH1107_SET_DISPLAY_OFFSET);
+  sh1107_command(SH1107_OFFSET_NONE);
+  sh1107_command(SH1107_SET_START_LINE);
+  sh1107_command(SH1107_CHARGE_PUMP_CTRL);
+  sh1107_command(SH1107_CHARGE_PUMP_ENABLE);
+  sh1107_command(SH1107_SET_ADDRESS_MODE);
+  sh1107_command(SH1107_ADDRESS_MODE_HORIZ);
+  sh1107_command(SH1107_SET_SEGMENT_REMAP);
+  sh1107_command(SH1107_SET_COM_SCAN_DIR);
+  sh1107_command(SH1107_SET_COM_PINS);
+  sh1107_command(SH1107_COM_PINS_ALT);
+  sh1107_command(SH1107_SET_CONTRAST);
+  sh1107_command(SH1107_CONTRAST_DEFAULT);
+  sh1107_command(SH1107_SET_PRECHARGE);
+  sh1107_command(SH1107_PRECHARGE_DEFAULT);
+  sh1107_command(SH1107_SET_VCOMH_DESELECT);
+  sh1107_command(SH1107_VCOMH_DEFAULT);
+  sh1107_command(SH1107_SET_ENTIRE_DISPLAY);
+  sh1107_command(SH1107_SET_NORMAL_DISPLAY);
+  sh1107_command(SH1107_DISPLAY_ON);
 }
