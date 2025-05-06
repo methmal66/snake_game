@@ -30,6 +30,11 @@
 #define SH1107_SET_ADDRESS_MODE 0x20
 #define SH1107_ADDRESS_MODE_HORIZ 0x00
 
+// Page Addressing (for partial updates)
+#define SH1107_SET_PAGE_ADDR 0xB0      // Set page start address (0xB0 - 0xB7)
+#define SH1107_SET_LOW_COL_ADDR 0x00   // Lower column address (0x00 - 0x0F)
+#define SH1107_SET_HIGH_COL_ADDR 0x10  // Higher column address (0x10 - 0x1F)
+
 // Segment Remap (X-axis flip)
 #define SH1107_SET_SEGMENT_REMAP 0xA1  // 0xA0 = normal, 0xA1 = flipped
 
@@ -59,6 +64,14 @@
 void sh1107_command(uint8_t);
 
 void sh1107_data(uint8_t);
+
+void sh1107_clean(uint8_t);
+
+void sh1107_page(uint8_t);
+
+void sh1107_lowcol(uint8_t);
+
+void sh1107_highcol(uint8_t);
 
 void sh1107_init();
 

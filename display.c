@@ -15,11 +15,34 @@ void sh1107_command(uint8_t cmd) {
   PORTB |= (1 << CS_PIN);
 }
 
-void sh1107_data(uint8_t data) {
+void sh1107_data(uint8_t y) {
+  uint8_t page_mask = 1 << (y % 8);
   PORTB |= (1 << DC_PIN);
   PORTB &= ~(1 << CS_PIN);
-  spi_write(data);
+  spi_write(page_mask);
   PORTB |= (1 << CS_PIN);
+}
+
+void sh1107_clean(uint8_t y) {
+  PORTB |= (1 << DC_PIN);
+  PORTB &= ~(1 << CS_PIN);
+  spi_write(0);
+  PORTB |= (1 << CS_PIN);
+}
+
+void sh1107_page(uint8_t y) {
+  uint8_t page = y / 8;
+  sh1107_command(SH1107_SET_PAGE_ADDR + page);
+}
+
+void sh1107_lowcol(uint8_t x) {
+  uint8_t low_nibble = (x & 0x0F);
+  sh1107_command(SH1107_SET_LOW_COL_ADDR + low_nibble);
+}
+
+void sh1107_highcol(uint8_t x) {
+  uint8_t high_nibble = ((x & 0xF0) >> 4);
+  sh1107_command(SH1107_SET_HIGH_COL_ADDR + high_nibble);
 }
 
 void sh1107_init() {

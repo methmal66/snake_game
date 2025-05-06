@@ -10,11 +10,11 @@
 // Drawing Functions
 // ======================
 void draw_horizontal_line(uint8_t y) {
-  sh1107_command(0xB0 + (y / 8));
-  sh1107_command(0x00);
-  sh1107_command(0x10);
   for (uint8_t col = 0; col < 128; col++) {
-    sh1107_data(1 << (y % 8));
+    sh1107_page(y);
+    sh1107_lowcol(col);
+    sh1107_highcol(col);
+    sh1107_data(y);
   }
 }
 
@@ -67,20 +67,20 @@ void draw_char(uint8_t x, uint8_t y, char c) {
   }
 
   for (uint8_t col = 0; col < 5; col++) {
-    sh1107_command(0xB0 + (y / 8));
-    sh1107_command(0x00 + ((x + col) & 0x0F));
-    sh1107_command(0x10 + (((x + col) & 0xF0) >> 4));
+    sh1107_page(y);
+    sh1107_lowcol(x + col);
+    sh1107_highcol(x + col);
     sh1107_data(font[char_index][col] << (y % 8));
   }
 }
 
 void draw_score(uint16_t* score) {
   // Clear score area
-  sh1107_command(0xB0);
-  sh1107_command(0x00);
-  sh1107_command(0x10);
   for (uint8_t col = 0; col < 128; col++) {
-    sh1107_data(0x00);
+    sh1107_page(0);
+    sh1107_lowcol(col);
+    sh1107_highcol(col);
+    sh1107_clean(0);
   }
 
   // Draw "SCORE:" label
@@ -99,6 +99,14 @@ void draw_score(uint16_t* score) {
   }
 }
 
+// Helper function to handle SH1107 page/column addressing efficiently
+void draw_pixel(uint8_t x, uint8_t y) {
+  sh1107_page(y);
+  sh1107_lowcol(x);
+  sh1107_highcol(x);
+  sh1107_data(y);
+}
+
 void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
   int16_t f = 1 - radius;
   int16_t ddF_x = 1;
@@ -106,26 +114,11 @@ void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
   int16_t x = 0;
   int16_t y = radius;
 
-  // Draw the 8 circle points
-  sh1107_command(0xB0 + ((y0 + radius) / 8));
-  sh1107_command(0x00 + ((x0) & 0x0F));
-  sh1107_command(0x10 + (((x0) & 0xF0) >> 4));
-  sh1107_data(1 << ((y0 + radius) % 8));
-
-  sh1107_command(0xB0 + ((y0 - radius) / 8));
-  sh1107_command(0x00 + ((x0) & 0x0F));
-  sh1107_command(0x10 + (((x0) & 0xF0) >> 4));
-  sh1107_data(1 << ((y0 - radius) % 8));
-
-  sh1107_command(0xB0 + ((y0) / 8));
-  sh1107_command(0x00 + ((x0 + radius) & 0x0F));
-  sh1107_command(0x10 + (((x0 + radius) & 0xF0) >> 4));
-  sh1107_data(1 << ((y0) % 8));
-
-  sh1107_command(0xB0 + ((y0) / 8));
-  sh1107_command(0x00 + ((x0 - radius) & 0x0F));
-  sh1107_command(0x10 + (((x0 - radius) & 0xF0) >> 4));
-  sh1107_data(1 << ((y0) % 8));
+  // Draw initial 4 cardinal points (optimized)
+  draw_pixel(x0, y0 + radius);
+  draw_pixel(x0, y0 - radius);
+  draw_pixel(x0 + radius, y0);
+  draw_pixel(x0 - radius, y0);
 
   while (x < y) {
     if (f >= 0) {
@@ -137,57 +130,34 @@ void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
     ddF_x += 2;
     f += ddF_x;
 
-    // Draw 8 circle points
-    sh1107_command(0xB0 + ((y0 + y) / 8));
-    sh1107_command(0x00 + ((x0 + x) & 0x0F));
-    sh1107_command(0x10 + (((x0 + x) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 + y) % 8));
+    // Draw all 8 symmetric points
+    draw_pixel(x0 + x, y0 + y);
+    draw_pixel(x0 + x, y0 - y);
+    draw_pixel(x0 - x, y0 + y);
+    draw_pixel(x0 - x, y0 - y);
+    draw_pixel(x0 + y, y0 + x);
+    draw_pixel(x0 + y, y0 - x);
+    draw_pixel(x0 - y, y0 + x);
+    draw_pixel(x0 - y, y0 - x);
+  }
 
-    sh1107_command(0xB0 + ((y0 - y) / 8));
-    sh1107_command(0x00 + ((x0 + x) & 0x0F));
-    sh1107_command(0x10 + (((x0 + x) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 - y) % 8));
-
-    sh1107_command(0xB0 + ((y0 + y) / 8));
-    sh1107_command(0x00 + ((x0 - x) & 0x0F));
-    sh1107_command(0x10 + (((x0 - x) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 + y) % 8));
-
-    sh1107_command(0xB0 + ((y0 - y) / 8));
-    sh1107_command(0x00 + ((x0 - x) & 0x0F));
-    sh1107_command(0x10 + (((x0 - x) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 - y) % 8));
-
-    sh1107_command(0xB0 + ((y0 + x) / 8));
-    sh1107_command(0x00 + ((x0 + y) & 0x0F));
-    sh1107_command(0x10 + (((x0 + y) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 + x) % 8));
-
-    sh1107_command(0xB0 + ((y0 - x) / 8));
-    sh1107_command(0x00 + ((x0 + y) & 0x0F));
-    sh1107_command(0x10 + (((x0 + y) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 - x) % 8));
-
-    sh1107_command(0xB0 + ((y0 + x) / 8));
-    sh1107_command(0x00 + ((x0 - y) & 0x0F));
-    sh1107_command(0x10 + (((x0 - y) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 + x) % 8));
-
-    sh1107_command(0xB0 + ((y0 - x) / 8));
-    sh1107_command(0x00 + ((x0 - y) & 0x0F));
-    sh1107_command(0x10 + (((x0 - y) & 0xF0) >> 4));
-    sh1107_data(1 << ((y0 - x) % 8));
+  // Draw 45° points if missed (when x == y)
+  if (x == y) {
+    draw_pixel(x0 + x, y0 + y);
+    draw_pixel(x0 + x, y0 - y);
+    draw_pixel(x0 - x, y0 + y);
+    draw_pixel(x0 - x, y0 - y);
   }
 }
 
 void render_game(GameState* state) {
   // Clear play area only (below partition line)
-  for (uint8_t page = PARTITION_LINE_Y / 8 + 1; page < 16; page++) {
-    sh1107_command(0xB0 + page);
-    sh1107_command(0x00);
-    sh1107_command(0x10);
+  for (uint8_t y = PARTITION_LINE_Y / 8 + 1; y < 128; y += 8) {
     for (uint8_t col = 0; col < 128; col++) {
-      sh1107_data(0x00);
+      sh1107_page(y);
+      sh1107_lowcol(col);
+      sh1107_highcol(col);
+      sh1107_clean(0);
     }
   }
 
@@ -200,10 +170,7 @@ void render_game(GameState* state) {
     uint8_t y = state->snake[i].y * CELL_SIZE + 1 + SCORE_AREA_HEIGHT;
     for (uint8_t dy = 0; dy < CELL_SIZE - 2; dy++) {
       for (uint8_t dx = 0; dx < CELL_SIZE - 2; dx++) {
-        sh1107_command(0xB0 + ((y + dy) / 8));
-        sh1107_command(0x00 + ((x + dx) & 0x0F));
-        sh1107_command(0x10 + (((x + dx) & 0xF0) >> 4));
-        sh1107_data(1 << ((y + dy) % 8));
+        draw_pixel(x + dx, y + dy);
       }
     }
   }
