@@ -14,7 +14,7 @@ typedef struct {
   Point* snake;
   uint8_t gameOver;
   Point food;
-  uint8_t direction;
+  volatile uint8_t* direction;
 } GameState;
 
 #endif

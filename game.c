@@ -27,7 +27,7 @@ void place_food(GameState* state) {
 void move_snake(GameState* state) {
   Point newHead = state->snake[0];
 
-  switch (state->direction) {
+  switch (*(state->direction)) {
     case 0:
       newHead.x++;
       break;  // Right

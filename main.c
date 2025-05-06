@@ -66,7 +66,7 @@ void hardware_init() {
 // ======================
 int main(void) {
   GameState* state;
-  state->direction = direction;
+  state->direction = &direction;
   state->score = INITIAL_SCORE;
   state->snakeLength = INITIAL_SNAKE_LENGTH;
 
