@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+void render_game(GameState*);
+
 void place_food(GameState*);
 
 void move_snake(GameState*);

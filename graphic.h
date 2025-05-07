@@ -18,12 +18,14 @@ void clear_score_area();
 
 void draw_score(uint16_t*);
 
-void draw_pixel(uint8_t, uint8_t);
+void clear_play_area();
+
+void draw_snake(GameState*);
+
+void draw_food(GameState*);
 
 void draw_pixel(uint8_t, uint8_t);
 
 void draw_circle(uint8_t, uint8_t, uint8_t);
-
-void render_game(GameState*);
 
 #endif

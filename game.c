@@ -8,6 +8,14 @@
 // ======================
 // Game Functions
 // ======================
+void render_game(GameState* state) {
+  clear_play_area();
+  draw_horizontal_line(PARTITION_LINE_Y);
+  draw_snake(state);
+  draw_food(state);
+  draw_score(&(state->score));
+}
+
 void place_food(GameState* state) {
   uint8_t valid = 0;
   while (!valid) {
