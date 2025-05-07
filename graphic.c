@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "display.h"
+#include "font.h"
 #include "types.h"
 
 // ======================
@@ -31,82 +32,65 @@ void draw_horizontal_line(uint8_t y) {
   }
 }
 
-void draw_char(uint8_t x, uint8_t y, char c) {
-  static const uint8_t font[][5] = {
-      {0x3E, 0x51, 0x49, 0x45, 0x3E},  // 0
-      {0x00, 0x42, 0x7F, 0x40, 0x00},  // 1
-      {0x42, 0x61, 0x51, 0x49, 0x46},  // 2
-      {0x21, 0x41, 0x45, 0x4B, 0x31},  // 3
-      {0x18, 0x14, 0x12, 0x7F, 0x10},  // 4
-      {0x27, 0x45, 0x45, 0x45, 0x39},  // 5
-      {0x3C, 0x4A, 0x49, 0x49, 0x30},  // 6
-      {0x01, 0x71, 0x09, 0x05, 0x03},  // 7
-      {0x36, 0x49, 0x49, 0x49, 0x36},  // 8
-      {0x06, 0x49, 0x49, 0x29, 0x1E},  // 9
-      {0x26, 0x49, 0x49, 0x49, 0x32},  // S
-      {0x3E, 0x41, 0x41, 0x41, 0x22},  // C
-      {0x3E, 0x41, 0x41, 0x41, 0x3E},  // O
-      {0x7F, 0x09, 0x19, 0x29, 0x46},  // R
-      {0x7F, 0x49, 0x49, 0x49, 0x41},  // E
-      {0x00, 0x36, 0x36, 0x00, 0x00}   // :
-  };
-
+uint8_t get_char_index(char c) {
   uint8_t char_index;
   if (c >= '0' && c <= '9') {
-    char_index = c - '0';
+    return c - '0';
   } else {
     switch (c) {
       case 'S':
-        char_index = 10;
-        break;
+        return 10;
       case 'C':
-        char_index = 11;
-        break;
+        return 11;
       case 'O':
-        char_index = 12;
-        break;
+        return 12;
       case 'R':
-        char_index = 13;
-        break;
+        return 13;
       case 'E':
-        char_index = 14;
-        break;
+        return 14;
       case ':':
-        char_index = 15;
-        break;
+        return 15;
       default:
-        return;
+        return 255;  // Invalid character
     }
-  }
-
-  for (uint8_t col = 0; col < 5; col++) {
-    sh1107_page(y);
-    sh1107_lowcol(x + col);
-    sh1107_highcol(x + col);
-    sh1107_data(font[char_index][col] << (y % 8));
   }
 }
 
-void draw_score(uint16_t* score) {
-  // Clear score area
+void draw_char(uint8_t x, uint8_t y, char c) {
+  static const uint8_t font[][5] = FONT;
+  uint8_t char_index = get_char_index(c);
+
+  for (uint8_t col = 0; col < 5; col++) {
+    uint8_t c_page = font[char_index][col];
+    sh1107_page(y);
+    sh1107_lowcol(x + col);
+    sh1107_highcol(x + col);
+    sh1107_data(c_page << (y % 8));
+  }
+}
+
+void clear_score_area() {
   for (uint8_t x = 0; x < 128; x++) {
     clear_page(x, 0);
   }
+}
 
-  // Draw "SCORE:" label
-  draw_char(0, 0, 'S');
-  draw_char(6, 0, 'C');
-  draw_char(12, 0, 'O');
-  draw_char(18, 0, 'R');
-  draw_char(24, 0, 'E');
-  draw_char(30, 0, ':');
+uint8_t draw_label(uint8_t x, uint8_t y, const char* label) {
+  uint8_t label_length = 0;
+  for (uint8_t i = 0; label[i] != '\0'; i++) {
+    label_length += x + i * FONT_WIDTH;
+    draw_char(label_length, y, label[i]);
+  }
+  return label_length;
+}
 
-  // Draw score value
+void draw_score(uint16_t* score) {
+  clear_score_area();
+  uint8_t nextx = draw_label(0, 0, "SCORE:");
+
   char score_str[6];
   itoa(*score, score_str, 10);
-  for (uint8_t i = 0; score_str[i] != '\0'; i++) {
-    draw_char(36 + i * 6, 0, score_str[i]);
-  }
+  draw_label(nextx, 0, score_str);
 }
 
 void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {

@@ -6,7 +6,15 @@
 
 void draw_horizontal_line(uint8_t);
 
+void clear_page(uint8_t, uint8_t);
+
+uint8_t get_char_index(char);
+
 void draw_char(uint8_t, uint8_t, char);
+
+void draw_label(uint8_t, uint8_t, char*);
+
+void clear_score_area();
 
 void draw_score(uint16_t*);
 
