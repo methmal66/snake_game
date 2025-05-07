@@ -65,7 +65,7 @@ void sh1107_command(uint8_t);
 
 void sh1107_data(uint8_t);
 
-void sh1107_clean(uint8_t);
+void sh1107_clean();
 
 void sh1107_page(uint8_t);
 

@@ -9,12 +9,25 @@
 // ======================
 // Drawing Functions
 // ======================
+
+// Helper function to handle SH1107 page/column addressing efficiently
+void draw_pixel(uint8_t x, uint8_t y) {
+  sh1107_page(y);
+  sh1107_lowcol(x);
+  sh1107_highcol(x);
+  sh1107_data(y);
+}
+
+void clear_page(uint8_t x, uint8_t page) {
+  sh1107_page(page);
+  sh1107_lowcol(x);
+  sh1107_highcol(x);
+  sh1107_clean(0);
+}
+
 void draw_horizontal_line(uint8_t y) {
-  for (uint8_t col = 0; col < 128; col++) {
-    sh1107_page(y);
-    sh1107_lowcol(col);
-    sh1107_highcol(col);
-    sh1107_data(y);
+  for (uint8_t x = 0; x < 128; x++) {
+    draw_pixel(x, y);
   }
 }
 
@@ -76,11 +89,8 @@ void draw_char(uint8_t x, uint8_t y, char c) {
 
 void draw_score(uint16_t* score) {
   // Clear score area
-  for (uint8_t col = 0; col < 128; col++) {
-    sh1107_page(0);
-    sh1107_lowcol(col);
-    sh1107_highcol(col);
-    sh1107_clean(0);
+  for (uint8_t x = 0; x < 128; x++) {
+    clear_page(x, 0);
   }
 
   // Draw "SCORE:" label
@@ -97,14 +107,6 @@ void draw_score(uint16_t* score) {
   for (uint8_t i = 0; score_str[i] != '\0'; i++) {
     draw_char(36 + i * 6, 0, score_str[i]);
   }
-}
-
-// Helper function to handle SH1107 page/column addressing efficiently
-void draw_pixel(uint8_t x, uint8_t y) {
-  sh1107_page(y);
-  sh1107_lowcol(x);
-  sh1107_highcol(x);
-  sh1107_data(y);
 }
 
 void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
@@ -152,12 +154,9 @@ void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
 
 void render_game(GameState* state) {
   // Clear play area only (below partition line)
-  for (uint8_t y = PARTITION_LINE_Y / 8 + 1; y < 128; y += 8) {
-    for (uint8_t col = 0; col < 128; col++) {
-      sh1107_page(y);
-      sh1107_lowcol(col);
-      sh1107_highcol(col);
-      sh1107_clean(0);
+  for (uint8_t page = PARTITION_LINE_Y / 8 + 1; page < 128; page += 8) {
+    for (uint8_t x = 0; x < 128; x++) {
+      clear_page(x, page);
     }
   }
 

@@ -23,7 +23,7 @@ void sh1107_data(uint8_t y) {
   PORTB |= (1 << CS_PIN);
 }
 
-void sh1107_clean(uint8_t y) {
+void sh1107_clean() {
   PORTB |= (1 << DC_PIN);
   PORTB &= ~(1 << CS_PIN);
   spi_write(0);
