@@ -1,17 +1,21 @@
+/**
+ * @file graphic.c
+ * @brief Graphics rendering functions for SH1107 OLED display.
+ */
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <util/delay.h>
-
 #include "config.h"
 #include "display.h"
 #include "font.h"
 #include "types.h"
 
-// ======================
-// Drawing Functions
-// ======================
-
-// Helper function to handle SH1107 page/column addressing efficiently
+/**
+ * @brief Draws a single pixel at specified coordinates.
+ * @param x Horizontal position (0-127).
+ * @param y Vertical position (0-63).
+ */
 void draw_pixel(uint8_t x, uint8_t y) {
   sh1107_page(y);
   sh1107_lowcol(x);
@@ -19,6 +23,11 @@ void draw_pixel(uint8_t x, uint8_t y) {
   sh1107_data(y);
 }
 
+/**
+ * @brief Clears an entire display page (8-pixel row group).
+ * @param x Starting horizontal position (0-127).
+ * @param page Page number (0-7 for 64px display).
+ */
 void clear_page(uint8_t x, uint8_t page) {
   sh1107_page(page);
   sh1107_lowcol(x);
@@ -26,14 +35,22 @@ void clear_page(uint8_t x, uint8_t page) {
   sh1107_clean(0);
 }
 
+/**
+ * @brief Draws a horizontal line across the display.
+ * @param y Vertical position for the line (0-63).
+ */
 void draw_horizontal_line(uint8_t y) {
   for (uint8_t x = 0; x < 128; x++) {
     draw_pixel(x, y);
   }
 }
 
+/**
+ * @brief Maps ASCII characters to font array indices.
+ * @param c Character to look up.
+ * @return Font array index (255 for invalid characters).
+ */
 uint8_t get_char_index(char c) {
-  uint8_t char_index;
   if (c >= '0' && c <= '9') {
     return c - '0';
   } else {
@@ -51,11 +68,17 @@ uint8_t get_char_index(char c) {
       case ':':
         return 15;
       default:
-        return 255;  // Invalid character
+        return 255;
     }
   }
 }
 
+/**
+ * @brief Renders a character at specified coordinates.
+ * @param x Horizontal starting position (0-127).
+ * @param y Vertical starting position (0-63).
+ * @param c Character to draw.
+ */
 void draw_char(uint8_t x, uint8_t y, char c) {
   static const uint8_t font[][5] = FONT;
   uint8_t char_index = get_char_index(c);
@@ -69,12 +92,22 @@ void draw_char(uint8_t x, uint8_t y, char c) {
   }
 }
 
+/**
+ * @brief Clears the score display area (top page).
+ */
 void clear_score_area() {
   for (uint8_t x = 0; x < 128; x++) {
     clear_page(x, 0);
   }
 }
 
+/**
+ * @brief Draws a text label at specified coordinates.
+ * @param x Horizontal starting position (0-127).
+ * @param y Vertical starting position (0-63).
+ * @param label Null-terminated string to draw.
+ * @return Ending x-position after drawn text.
+ */
 uint8_t draw_label(uint8_t x, uint8_t y, const char* label) {
   uint8_t label_length = 0;
   for (uint8_t i = 0; label[i] != '\0'; i++) {
@@ -84,6 +117,10 @@ uint8_t draw_label(uint8_t x, uint8_t y, const char* label) {
   return label_length;
 }
 
+/**
+ * @brief Draws/updates the score display.
+ * @param score Pointer to current score value.
+ */
 void draw_score(uint16_t* score) {
   clear_score_area();
   uint8_t nextx = draw_label(0, 0, "SCORE:");
@@ -93,6 +130,12 @@ void draw_score(uint16_t* score) {
   draw_label(nextx, 0, score_str);
 }
 
+/**
+ * @brief Draws a circle using midpoint algorithm.
+ * @param x0 Center x-coordinate (0-127).
+ * @param y0 Center y-coordinate (0-63).
+ * @param radius Circle radius in pixels.
+ */
 void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
   int16_t f = 1 - radius;
   int16_t ddF_x = 1;
@@ -136,6 +179,9 @@ void draw_circle(uint8_t x0, uint8_t y0, uint8_t radius) {
   }
 }
 
+/**
+ * @brief Clears the game play area (below partition line).
+ */
 void clear_play_area() {
   for (uint8_t page = PARTITION_LINE_Y / 8 + 1; page < 128; page += 8) {
     for (uint8_t x = 0; x < 128; x++) {
@@ -144,6 +190,10 @@ void clear_play_area() {
   }
 }
 
+/**
+ * @brief Renders the snake on the display.
+ * @param state Pointer to current GameState structure.
+ */
 void draw_snake(GameState* state) {
   for (uint8_t i = 0; i < state->snakeLength; i++) {
     uint8_t x = state->snake[i].x * CELL_SIZE + 1;
@@ -157,6 +207,10 @@ void draw_snake(GameState* state) {
   }
 }
 
+/**
+ * @brief Renders the food item on the display.
+ * @param state Pointer to current GameState structure.
+ */
 void draw_food(GameState* state) {
   uint8_t foodX = state->food.x * CELL_SIZE + CELL_SIZE / 2;
   uint8_t foodY = state->food.y * CELL_SIZE + CELL_SIZE / 2 + SCORE_AREA_HEIGHT;
