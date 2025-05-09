@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#define DISPLAY_WIDTH 128
+#define PAGE_HEIGHT 8
+#define DISPLAY_INIT_DELAY_MS 10
+
 // Display ON/OFF
 #define SH1107_DISPLAY_OFF 0xAE
 #define SH1107_DISPLAY_ON 0xAF

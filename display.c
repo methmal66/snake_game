@@ -25,11 +25,11 @@ void sh1107_command(uint8_t cmd) {
  * @param y The vertical position (0-127) to target.
  */
 void sh1107_data(uint8_t y) {
-  uint8_t page_mask = 1 << (y % 8);  // Convert Y to page bitmask
-  PORTB |= (1 << DC_PIN);            // DC high for data mode
-  PORTB &= ~(1 << CS_PIN);           // CS low to enable SPI
-  spi_write(page_mask);              // Transmit pixel data
-  PORTB |= (1 << CS_PIN);            // CS high to end transaction
+  uint8_t page_mask = 1 << (y % PAGE_HEIGHT);  // Convert Y to page bitmask
+  PORTB |= (1 << DC_PIN);                      // DC high for data mode
+  PORTB &= ~(1 << CS_PIN);                     // CS low to enable SPI
+  spi_write(page_mask);                        // Transmit pixel data
+  PORTB |= (1 << CS_PIN);                      // CS high to end transaction
 }
 
 /**
@@ -47,7 +47,7 @@ void sh1107_clean() {
  * @param y The vertical position (0-127) to determine the page.
  */
 void sh1107_page(uint8_t y) {
-  uint8_t page = y / 8;  // Convert Y coordinate to page number
+  uint8_t page = y / PAGE_HEIGHT;  // Convert Y coordinate to page number
   sh1107_command(SH1107_SET_PAGE_ADDR + page);
 }
 
@@ -78,9 +78,9 @@ void sh1107_highcol(uint8_t x) {
 void sh1107_init() {
   // Hardware reset
   PORTB &= ~(1 << RES_PIN);
-  _delay_ms(10);
+  _delay_ms(DISPLAY_INIT_DELAY_MS);
   PORTB |= (1 << RES_PIN);
-  _delay_ms(10);
+  _delay_ms(DISPLAY_INIT_DELAY_MS);
 
   // Init sequence
   sh1107_command(SH1107_DISPLAY_OFF);
