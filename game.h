@@ -1,3 +1,8 @@
+/**
+ * @file game.h
+ * @brief Header file for game logic and state management in the Snake game.
+ */
+
 #ifndef SNAKE_GAME_GAME_H
 #define SNAKE_GAME_GAME_H
 

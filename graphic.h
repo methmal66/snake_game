@@ -1,3 +1,8 @@
+/**
+ * @file graphic.h
+ * @brief Header file for graphics rendering functions for the Snake game.
+ */
+
 #ifndef SNAKE_GAME_GRAPHIC_H
 #define SNAKE_GAME_GRAPHIC_H
 

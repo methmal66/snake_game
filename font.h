@@ -1,3 +1,8 @@
+/**
+ * @file font.h
+ * @brief Header file for font definitions used in the Snake game.
+ */
+
 #ifndef SNAKE_GAME_FONT_H
 #define SNAKE_GAME_FONT_H
 

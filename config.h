@@ -1,3 +1,8 @@
+/**
+ * @file config.h
+ * @brief Configuration file for the Snake game on AVR microcontrollers.
+ */
+
 #ifndef SNAKE_GAME_CONFIG_H
 #define SNAKE_GAME_CONFIG_H
 

@@ -1,3 +1,8 @@
+/**
+ * @file display.h
+ * @brief Header file for SH1107 OLED display driver
+ */
+
 #ifndef SNAKE_GAME_DISPLAY_H
 #define SNAKE_GAME_DISPLAY_H
 

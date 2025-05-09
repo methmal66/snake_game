@@ -1,3 +1,8 @@
+/**
+ * @file types.h
+ * @brief Header file defining data structures for the Snake game.
+ */
+
 #ifndef SNAKE_GAME_TYPES_H
 #define SNAKE_GAME_TYPES_H
 

@@ -1,3 +1,8 @@
+/**
+ * @file serial.h
+ * @brief Header file for SPI communication with SH1107 OLED display.
+ */
+
 #ifndef SNAKE_GAME_SERIAL_H
 #define SNAKE_GAME_SERIAL_H
 
