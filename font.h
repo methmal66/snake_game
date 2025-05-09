@@ -21,6 +21,14 @@
 #define CHAR_E {0x7F, 0x49, 0x49, 0x49, 0x41}
 #define CHAR_COLON {0x00, 0x36, 0x36, 0x00, 0x00}
 
+#define CHAR_S_INDEX 10
+#define CHAR_C_INDEX 11
+#define CHAR_O_INDEX 12
+#define CHAR_R_INDEX 13
+#define CHAR_E_INDEX 14
+#define CHAR_COLON_INDEX 15
+#define CHAR_INVALID_INDEX 255
+
 #define FONT                                                       \
   {CHAR_0, CHAR_1, CHAR_2, CHAR_3, CHAR_4, CHAR_5, CHAR_6, CHAR_7, \
    CHAR_8, CHAR_9, CHAR_S, CHAR_C, CHAR_O, CHAR_R, CHAR_E, CHAR_COLON}

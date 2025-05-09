@@ -56,19 +56,19 @@ uint8_t get_char_index(char c) {
   } else {
     switch (c) {
       case 'S':
-        return 10;
+        return CHAR_S_INDEX;
       case 'C':
-        return 11;
+        return CHAR_C_INDEX;
       case 'O':
-        return 12;
+        return CHAR_O_INDEX;
       case 'R':
-        return 13;
+        return CHAR_R_INDEX;
       case 'E':
-        return 14;
+        return CHAR_E_INDEX;
       case ':':
-        return 15;
+        return CHAR_COLON_INDEX;
       default:
-        return 255;
+        return CHAR_INVALID_INDEX;
     }
   }
 }
